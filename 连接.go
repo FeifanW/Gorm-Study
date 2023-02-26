@@ -52,6 +52,12 @@ type Student struct {
 	//Date  string  `gorm:"default:2022-12-30;comment:日期"` // 默认时间
 }
 
+func (user *Student) BeforeCreate(tx *gorm.DB) (err error) {
+	email := "test@qq.com"
+	user.Email = &email
+	return nil
+}
+
 func main() {
 	DB.AutoMigrate(&Student{}) // 创建一张表
 	//email := "123465@163.com"
@@ -80,10 +86,10 @@ func main() {
 	//fmt.Println(err)
 
 	// 单条记录的查询
-	var student Student
-	DB = DB.Session(&gorm.Session{
-		Logger: mysqlLogger,
-	})
+	//var student Student
+	//DB = DB.Session(&gorm.Session{
+	//	Logger: mysqlLogger,
+	//})
 	//DB.Take(&student)
 	//fmt.Println(student)
 	//DB.First(&student)
@@ -93,10 +99,50 @@ func main() {
 	//fmt.Println(student)
 
 	// 可以根据主键查询
-	DB.Take(&student, 2)
-	fmt.Println(student)
-	err := DB.Take(&student, "45").Error
-	fmt.Println(err)
-	fmt.Println(student)
+	//DB.Take(&student, 2)
+	//fmt.Println(student)
+	//err := DB.Take(&student, "45").Error
+	//fmt.Println(err)
+	//fmt.Println(student)
+
+	// 查询多条记录
+	//var studentList []Student
+	//DB.Find(&studentList)
+	//for _, student := range studentList {
+	//	fmt.Println(student)
+	//}
+	//
+	//// 由于email是指针类型，所以看不到实际的内容
+	//// 但是序列化之后，会转换为我们看得懂的方式
+	//var studentList1 []Student
+	//DB.Find(&studentList1)
+	//for _, student := range studentList1 {
+	//	data, _ := json.Marshal(student)
+	//	fmt.Println(string(data))
+	//}
+
+	//var student Student
+	//DB.Take(&student, 20)
+	//student.Age = 23
+	//// 全字段更新
+	//DB.Save(&student)
+
+	//零值也会更新
+	//DB.Take(&student)
+	//student.Age = 0
+	//// 全字段更新
+	//DB.Save(&student)
+
+	// 更新指定字段
+	//var student Student
+	//DB.Take(&student)
+	//student.Age = 21
+	//// 全字段更新
+	//DB.Select("age").Save(&student)
+
+	DB.Create(&Student{
+		Name: "world",
+		Age:  25,
+	})
 
 }
